@@ -1,2 +1,20 @@
-.vscode/
-.venv/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+*.env
+
+# Packaging
+build/
+dist/
+*.egg-info/
+
+# Linting
+.mypy_cache/
+.pytest_cache/
+.coverage
+coverage.xml
