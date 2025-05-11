@@ -95,3 +95,54 @@ If you need to generate a `requirements.txt` for compatibility with other tools 
     ```bash
     poetry export --without-hashes -f requirements.txt > requirements.txt
     ```
+
+---
+
+## 🔄 Pre-commit Hooks
+
+We use *Pre-commit* to automate code checks before each commit.
+
+### 🚀 *Installation*:
+
+To set up the hooks, run the following command:
+
+bash
+pre-commit install
+
+
+""### ⚙️ *Usage*:
+
+markdown
+The hooks will automatically:
+- Run `flake8` for style checks.
+- Run `black` for formatting.
+- Run `pylint` for static analysis.
+- Run `bandit` for security checks.
+- Run `mypy` for type checking.
+
+
+""
+The hooks will automatically:
+
+* Run flake8 for style checks.
+* Run black for formatting.
+* Run pylint for static analysis.
+* Run bandit for security checks.
+* Run mypy for type checking.
+
+""### 🔍 *Manual Execution*:
+
+bash
+pre-commit run --all-files
+
+
+Pre-commit hooks help ensure code quality and consistency before changes are committed, preventing issues from reaching the main branch.
+""
+If you want to manually run all hooks on all files:
+
+bash
+pre-commit run --all-files
+
+
+Pre-commit hooks help ensure code quality and consistency before changes are committed, preventing issues from reaching the main branch.
+""
