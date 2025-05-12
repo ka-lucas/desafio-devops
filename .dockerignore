@@ -1,0 +1,32 @@
+# Ambiente virtual
+venv/
+.env
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Git e IDEs
+.git/
+.idea/
+.vscode/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build / distribuição
+build/
+dist/
+*.egg-info/
+
+# Outras pastas desnecessárias
+migrations/
+tests/
+
+
+*.exe

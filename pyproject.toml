@@ -12,7 +12,28 @@ flask = "^2.3.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
+flake8 = "^7.2.0"
+pylint = "^3.3.7"
+bandit = "^1.8.3"
+mypy = "^1.15.0"
+pre-commit = "^4.2.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+max-line-length = 120
+exclude = ["venv", "__pycache__", ".git", "build", "dist"]
+
+[tool.pylint]
+fail-under = 8.0
+output-format = "colorized"
+ignore = ["venv", "tests"]
+
+[tool.mypy]
+strict = true
+files = ["src"]
+
+[tool.black]
+line-length = 120
