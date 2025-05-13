@@ -49,3 +49,36 @@ jobs:
         with:
           name: test-report
           path: ./coverage.xml
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: ☁️ Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+
+      - name: 🔐 Configure Docker to use GCR
+        run: echo "${{ secrets.GCP_CREDENTIALS_JSON }}" | docker login -u _json_key --password-stdin https://gcr.io
+
+      - name: 🐳 Build Docker image
+        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/desafio-api .
+
+      - name: 🚀 Push Docker image to GCR
+        run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/desafio-api
+
+      - name: ⚙️ Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: 📂 Terraform Init
+        run: terraform init
+
+      - name: 🧪 Terraform Plan
+        run: terraform plan
+
+      - name: 🚀 Terraform Apply
+        run: terraform apply -auto-approve
