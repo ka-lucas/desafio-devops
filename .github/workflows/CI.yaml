@@ -50,38 +50,44 @@ jobs:
           name: test-report
           path: ./coverage.xml
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
+      needs: build
+      runs-on: ubuntu-latest
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
+      steps:
+        - name: 📥 Checkout code
+          uses: actions/checkout@v3
 
-      - name: ☁️ Decode and authenticate to Google Cloud
-        run: |
-          echo "${{ secrets.GCP_CREDENTIALS_JSON_BASE64 }}" | base64 --decode > gcp-key.json
-          gcloud auth activate-service-account --key-file=gcp-key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json" >> $GITHUB_ENV
+        - name: ☁️ Decode and authenticate to Google Cloud
+          run: |
+            echo "${{ secrets.GCP_CREDENTIALS_JSON_BASE64 }}" | base64 --decode > gcp-key.json
+            gcloud auth activate-service-account --key-file=gcp-key.json
+            echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json" >> $GITHUB_ENV
 
+        - name: 🔐 Configure Docker to use GCR
+          run: gcloud auth configure-docker --quiet
 
-      - name: 🔐 Configure Docker to use GCR
-        run: |
-          gcloud auth configure-docker --quiet
+        - name: 🐳 Build & Push Docker image
+          run: |
+            docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/desafio-api .
+            docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/desafio-api
 
-      - name: 🐳 Build Docker image
-        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/desafio-api .
+        - name: ⚙️ Set up Terraform
+          uses: hashicorp/setup-terraform@v3
 
-      - name: 🚀 Push Docker image to GCR
-        run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/desafio-api
+        - name: 🌍 Define ENV folder (homolog/prod)
+          id: set-env
+          run: |
+            if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+              echo "env_folder=prod" >> $GITHUB_OUTPUT
+            else
+              echo "env_folder=homolog" >> $GITHUB_OUTPUT
+            fi
 
-      - name: ⚙️ Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+        - name: 📁 Terraform Init
+          run: terraform -chdir=terraform/${{ steps.set-env.outputs.env_folder }} init
 
-      - name: 📁 Terraform Init
-        run: terraform -chdir=terraform/${{ github.ref_name == 'main' && 'prod' || 'homolog' }} init
+        - name: ⚙️ Terraform Plan
+          run: terraform -chdir=terraform/${{ steps.set-env.outputs.env_folder }} plan
 
-      - name: ⚙️ Terraform Plan
-        run: terraform -chdir=terraform/${{ github.ref_name == 'main' && 'prod' || 'homolog' }} plan
-
-      - name: 🚀 Terraform Apply
-        run: terraform -chdir=terraform/${{ github.ref_name == 'main' && 'prod' || 'homolog' }} apply -auto-approve
+        - name: 🚀 Terraform Apply
+          run: terraform -chdir=terraform/${{ steps.set-env.outputs.env_folder }} apply -auto-approve
