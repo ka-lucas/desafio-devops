@@ -61,6 +61,8 @@ jobs:
         run: |
           echo "${{ secrets.GCP_CREDENTIALS_JSON_BASE64 }}" | base64 --decode > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$PWD/gcp-key.json" >> $GITHUB_ENV
+
 
       - name: 🔐 Configure Docker to use GCR
         run: |
