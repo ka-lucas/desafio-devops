@@ -78,10 +78,10 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: 📂 Terraform Init
-        run: terraform init
+        run: terraform -chdir=terraform/${{ github.ref_name == 'main' && 'prod' || 'homolog' }} init
 
       - name: 🧪 Terraform Plan
         run: terraform plan
 
       - name: 🚀 Terraform Apply
-        run: terraform apply -auto-approve
+        run:  terraform -chdir=terraform/${{ github.ref_name == 'main' && 'prod' || 'homolog' }} apply -auto-approve
