@@ -1,11 +1,11 @@
 provider "google" {
   project = "devops-459516"
-  region  = "us-central1-a"
+  region  = "us-central1"
 }
 
 resource "google_cloud_run_service" "homolog" {
   name     = "desafio-api-homolog"
-  location = "us-central1-a"
+  location = "us-central1"
 
   template {
     spec {
