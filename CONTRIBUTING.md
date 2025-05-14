@@ -40,6 +40,7 @@ We follow a branching model based on Git Flow:
 #### Example of a commit message:
 ```bash
 feat: Add user authentication feature
+```
 
 ## Pull Request Rules
 - Each PR should be related to an issue.
@@ -63,7 +64,7 @@ We follow Semantic Versioning (`MAJOR.MINOR.PATCH`):
 - **Documentation**: The main documentation is in `README.md`.
 - **Code Documentation**: All methods and classes should have docstrings.
 - **Automatic Documentation**: We use tools like `Sphinx` for automatic generation.
-- **Code Quality**: We use static analysis tools like `flake8` and `pylint` for quality checks.
+- **Code Quality**: We use static analysis tools like `flake8`, `pylint`, `bandit` and `mypy`.
 
 ## 7️⃣ Code Review Policy
 - Every PR should be reviewed by at least one team member.
@@ -89,30 +90,24 @@ For any questions or suggestions, please reach out to us at [katarinelucas1@gmai
 We look forward to your contributions!
 
 ## 9️⃣ Generating `requirements.txt` with Poetry
-If you need to generate a `requirements.txt` for compatibility with other tools (e.g., when deploying or using CI/CD systems that require `pip`), you can do so using Poetry. To generate the `requirements.txt` file:
+If you need to generate a `requirements.txt` for compatibility with other tools (e.g., when deploying or using CI/CD systems that require `pip`), you can do so using Poetry:
 
-1. Run the following command in the terminal:
-    ```bash
-    poetry export --without-hashes -f requirements.txt > requirements.txt
-    ```
+```bash
+poetry export --without-hashes -f requirements.txt > requirements.txt
+```
 
 ---
 
-## 🔄 Pre-commit Hooks
+## 🔄 10️⃣ Pre-commit Hooks
 
 We use *Pre-commit* to automate code checks before each commit.
 
-### 🚀 *Installation*:
-
-To set up the hooks, run the following command:
-
-bash
+### 🚀 Installation
+```bash
 pre-commit install
+```
 
-
-""### ⚙️ *Usage*:
-
-markdown
+### ⚙️ Usage
 The hooks will automatically:
 - Run `flake8` for style checks.
 - Run `black` for formatting.
@@ -120,29 +115,49 @@ The hooks will automatically:
 - Run `bandit` for security checks.
 - Run `mypy` for type checking.
 
-
-""
-The hooks will automatically:
-
-* Run flake8 for style checks.
-* Run black for formatting.
-* Run pylint for static analysis.
-* Run bandit for security checks.
-* Run mypy for type checking.
-
-""### 🔍 *Manual Execution*:
-
-bash
+### 🔍 Manual Execution
+```bash
 pre-commit run --all-files
+```
 
+Pre-commit hooks ensure code quality and consistency before changes are committed, preventing issues from reaching the main branch.
 
-Pre-commit hooks help ensure code quality and consistency before changes are committed, preventing issues from reaching the main branch.
-""
-If you want to manually run all hooks on all files:
+---
 
-bash
-pre-commit run --all-files
+## 🔁 11️⃣ CI/CD and Deployment Process
 
+We use **GitHub Actions** for automated testing and deployment.
 
-Pre-commit hooks help ensure code quality and consistency before changes are committed, preventing issues from reaching the main branch.
-""
+### 📦 Docker & GCR
+- The application is containerized using **Docker**.
+- Docker images are automatically built and pushed to **Google Container Registry (GCR)**.
+
+### ☁️ Google Cloud Run
+- The app is deployed to **Google Cloud Run** using **Terraform**.
+- Deployments are split into two environments:
+  - `develop` → **Homologation**
+  - `main` → **Production**
+
+### ⚙️ CI/CD Workflow
+On every push or pull request to `develop` or `main`, the following steps are executed:
+
+1. ✅ **Code Quality Checks**: `flake8`, `black`, `pylint`, `bandit`, `mypy`
+2. 🧪 **Test Execution**: Using `pytest` and coverage report (`codecov`)
+3. 🐳 **Docker Build & Push**: Builds the container and pushes to `gcr.io`
+4. 🌍 **Terraform Deploy**: Applies infrastructure changes via Terraform for Cloud Run
+
+### 🔐 GitHub Secrets Required
+You must configure the following **GitHub Secrets** in your repository:
+
+- `GCP_PROJECT_ID`: Your Google Cloud project ID
+- `GCP_CREDENTIALS_JSON_BASE64`: Base64-encoded contents of the service account JSON key
+
+To encode your credentials:
+```bash
+base64 -w 0 path/to/service-account.json
+```
+Then paste the result in your GitHub repository secrets.
+
+---
+
+We welcome improvements and suggestions to the CI/CD setup!
