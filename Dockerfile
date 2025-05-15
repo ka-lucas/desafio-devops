@@ -21,4 +21,4 @@ ENV NAME="World"
 EXPOSE 8080
 
 # Defina o comando para rodar a aplicação
-CMD ["gunicorn", "run", "python", "src.app:app"]
+CMD ["gunicorn", "run", "python", "wsgi:app"]
