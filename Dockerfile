@@ -8,8 +8,10 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
 # Instale o Poetry e as dependências
-RUN pip install poetry && poetry config virtualenvs.create false && poetry install --no-dev
-
+# Instala Poetry e dependências sem ambiente virtual
+RUN pip install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install --only main
 # Copie o restante dos arquivos da aplicação para dentro do container
 COPY . .
 
@@ -21,4 +23,4 @@ ENV NAME="World"
 EXPOSE 8080
 
 # Defina o comando para rodar a aplicação
-CMD ["gunicorn", "run", "python", "wsgi:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "wsgi:app"]
