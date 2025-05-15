@@ -160,4 +160,31 @@ Then paste the result in your GitHub repository secrets.
 
 ---
 
-We welcome improvements and suggestions to the CI/CD setup!
+## 🧪 12️⃣ Running the Application Locally
+
+You can test the application locally before pushing:
+
+### ▶️ Using Flask (simple mode)
+```bash
+export NAME=YourName
+poetry run python src/app.py
+```
+
+### ▶️ Using Gunicorn (production-like mode)
+```bash
+export NAME=YourName
+poetry run gunicorn wsgi:app --bind 0.0.0.0:8080
+```
+
+### 🐳 Using Docker
+1. Build the image:
+```bash
+docker build -t desafio-api .
+```
+
+2. Run it:
+```bash
+docker run -p 8080:8080 -e NAME=YourName desafio-api
+```
+
+The application will be accessible at: [http://localhost:8080](http://localhost:8080)
