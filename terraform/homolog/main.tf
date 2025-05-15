@@ -19,7 +19,7 @@ resource "google_cloud_run_service" "homolog" {
 
         env {
           name  = "NAME"
-          value = "Homolog"
+          value = "World"
         }
       }
     }
@@ -30,8 +30,16 @@ resource "google_cloud_run_service" "homolog" {
     latest_revision = true
   }
 }
+resource "google_compute_region_network_endpoint_group" "cloud_run_neg" {
+  name                  = "cloud-run-neg"
+  network_endpoint_type = "SERVERLESS"
+  region                = "us-central1"
+  cloud_run {
+    service = google_cloud_run_service.homolog.name
+  }
+}
 
-# Service Account exclusiva para invocar o Cloud Run
+#Service Account exclusiva para invocar o Cloud Run
 resource "google_service_account" "invoker" {
   account_id   = "cloud-run-invoker"
   display_name = "Cloud Run Invoker"
@@ -43,4 +51,19 @@ resource "google_cloud_run_service_iam_member" "invoker_access" {
   location = google_cloud_run_service.homolog.location
   role     = "roles/run.invoker"
   member   = "serviceAccount:${google_service_account.invoker.email}"
+}
+
+resource "google_compute_backend_service" "default" {
+  name                  = "cloud-run-backend"
+  protocol              = "HTTP"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+  port_name             = "http"
+  timeout_sec           = 30
+  enable_cdn            = false
+
+  backend {
+    group = google_compute_region_network_endpoint_group.cloud_run_neg.id
+  }
+
+  security_policy = google_compute_security_policy.ip_restrict.id
 }
