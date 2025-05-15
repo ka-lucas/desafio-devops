@@ -53,6 +53,12 @@ resource "google_cloud_run_service_iam_member" "invoker_access" {
   member   = "serviceAccount:${google_service_account.invoker.email}"
 }
 
+resource "google_compute_security_policy" "ip_restrict" {
+  name        = "allow-my-ip"
+  description = "Allow only specific IPs"
+}
+
+
 resource "google_compute_backend_service" "default" {
   name                  = "cloud-run-backend"
   protocol              = "HTTP"
