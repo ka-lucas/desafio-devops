@@ -73,3 +73,23 @@ resource "google_compute_backend_service" "default" {
 
   security_policy = google_compute_security_policy.ip_restrict.id
 }
+
+resource "google_compute_global_address" "cloud_run_ip" {
+  name = "cloud-run-ip"
+}
+
+resource "google_compute_url_map" "default" {
+  name            = "cloud-run-url-map"
+  default_service = google_compute_backend_service.default.id
+}
+resource "google_compute_target_http_proxy" "default" {
+  name    = "cloud-run-proxy"
+  url_map = google_compute_url_map.default.id
+}
+resource "google_compute_global_forwarding_rule" "default" {
+  name                  = "cloud-run-forwarding-rule"
+  target                = google_compute_target_http_proxy.default.id
+  port_range            = "80"
+  load_balancing_scheme = "EXTERNAL"
+  ip_address            = google_compute_global_address.cloud_run_ip.address
+}

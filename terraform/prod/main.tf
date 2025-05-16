@@ -4,6 +4,12 @@ provider "google" {
   region  = "us-central1"
 }
 
+env {
+  name  = "NAME"
+  value = "Production"
+}
+
+
 resource "google_cloud_run_service" "prod" {
   name     = "desafio-api-prod"
   location = "us-central1"
