@@ -52,12 +52,34 @@ resource "google_cloud_run_service_iam_member" "invoker_access" {
   role     = "roles/run.invoker"
   member   = "serviceAccount:${google_service_account.invoker.email}"
 }
-
 resource "google_compute_security_policy" "ip_restrict" {
   name        = "allow-my-ip"
-  description = "Allow only specific IPs"
-}
+  description = "Allow only my IP"
 
+  rule {
+    action   = "allow"
+    priority = 1000
+    match {
+      versioned_expr = "SRC_IPS_V1"
+      config {
+        src_ip_ranges = ["179.218.8.33"]
+      }
+    }
+    description = "Allow my IP only"
+  }
+
+  rule {
+    action   = "deny(403)"
+    priority = 2147483647
+    match {
+      versioned_expr = "SRC_IPS_V1"
+      config {
+        src_ip_ranges = ["*"]
+      }
+    }
+    description = "Deny all others"
+  }
+}
 
 resource "google_compute_backend_service" "default" {
   name                  = "cloud-run-backend"
