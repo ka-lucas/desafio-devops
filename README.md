@@ -2,6 +2,12 @@
 
 Repositório de instrução para o desafio técnico para a vaga de Pessoa Engenheira DevOps.
 
+## 📄 Documentação
+
+A documentação completa do projeto (processos, pipelines, estrutura e execução) está disponível em:
+
+🔗 [https://ka-lucas.github.io/desafio-devops](https://ka-lucas.github.io/desafio-devops)
+
 ## Descrição do desafio
 
 Neste repositório, você encontrará uma aplicação web desenvolvida em [Flask](https://flask.palletsprojects.com/). Sua tarefa consiste nos seguintes passos (realizá-los na ordem que julgar adequada e ir marcando os itens completos):
