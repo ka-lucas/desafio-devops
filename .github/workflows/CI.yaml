@@ -84,7 +84,7 @@ jobs:
             fi
 
         - name: 📁 Terraform Init
-          run: terraform -chdir=terraform/${{ steps.set-env.outputs.env_folder }} init
+          run: terraform -chdir=terraform/${{ steps.set-env.outputs.env_folder }} init -backend-config=backend.${{ steps.set-env.outputs.env_folder }}.tf
 
         - name: ⚙️ Terraform Plan
           run: terraform -chdir=terraform/${{ steps.set-env.outputs.env_folder }} plan
