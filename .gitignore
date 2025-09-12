@@ -1,1 +1,44 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+pip-selfcheck.json
+
+# Environment variables
+.env
+.env.*
+*.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+crash.log
+terraform.tfvars
+terraform.tfvars.json
+
+# Packaging
+build/
+dist/
+*.egg-info/
+
+# Coverage & testing
+.coverage
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+
+# VSCode
 .vscode/
+
+# macOS/Linux/Windows
+.DS_Store
+Thumbs.db

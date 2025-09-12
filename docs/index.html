@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Desafio DevOps - Documentação</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 40px auto;
+      max-width: 900px;
+      line-height: 1.6;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #2c3e50;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 Desafio DevOps - Documentação</h1>
+
+  <p>Este projeto contém uma API Flask containerizada com Docker, provisionada com Terraform e publicada no Google Cloud Run, com CI/CD automatizado via GitHub Actions.</p>
+
+  <h2>📁 Estrutura do Repositório</h2>
+  <ul>
+    <li><code>src/</code>: Código-fonte da API</li>
+    <li><code>tests/</code>: Testes unitários</li>
+    <li><code>terraform/homolog</code> e <code>terraform/prod</code>: Infraestrutura como código</li>
+    <li><code>.github/workflows</code>: Pipeline CI/CD</li>
+    <li><code>docs/</code>: Documentação estática</li>
+  </ul>
+
+  <h2>🚀 CI/CD Pipeline</h2>
+  <p>O fluxo de CI/CD executa automaticamente os seguintes passos:</p>
+  <ol>
+    <li>Verificação de qualidade: <code>flake8</code>, <code>black</code>, <code>pylint</code>, <code>bandit</code>, <code>mypy</code></li>
+    <li>Execução de testes com <code>pytest</code></li>
+    <li>Build e push da imagem Docker para o GCR</li>
+    <li>Deploy via Terraform para o ambiente homologação ou produção</li>
+  </ol>
+
+  <h2>⚙️ Como rodar localmente</h2>
+  <pre><code># Flask
+export NAME=SeuNome
+poetry run python src/app.py
+
+# Gunicorn
+poetry run gunicorn wsgi:app --bind 0.0.0.0:8080
+
+# Docker
+docker build -t desafio-api .
+docker run -p 8080:8080 -e NAME=SeuNome desafio-api
+</code></pre>
+
+  <h2>📦 Terraform</h2>
+  <pre><code>export GOOGLE_APPLICATION_CREDENTIALS="path/to/credentials.json"
+
+# Init
+terraform -chdir=terraform/homolog init -reconfigure
+
+# Plan
+terraform -chdir=terraform/homolog plan
+
+# Apply
+terraform -chdir=terraform/homolog apply -auto-approve
+</code></pre>
+
+  <h2>📚 Contribuindo</h2>
+  <p>Use Git Flow e mensagens de commit semânticas (ex: <code>feat: Adiciona endpoint de status</code>). Veja mais no arquivo <code>CONTRIBUTING.md</code>.</p>
+
+  <hr>
+  <p>Para dúvidas, entre em contato com <strong>katarinelucas1@gmail.com</strong>.</p>
+
+</body>
+</html>
